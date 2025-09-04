@@ -1487,10 +1487,23 @@ body::before {
 }
 
 /* Touch-friendly Interactive Elements */
-.bottle, .photo-card, .blow-button, .countdown-item {
+.bottle, .photo-card, .blow-button, .countdown-item, .gallery-item {
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
     user-select: none;
+    cursor: pointer;
+}
+
+/* Ensure interactive elements are properly sized for touch */
+.bottle, .photo-card {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+.gallery-item {
+    min-height: 44px;
+    min-width: 44px;
+    cursor: pointer;
 }
 
 /* Improved button interactions for mobile */

@@ -334,9 +334,35 @@ function displayPhotoGrid() {
         galleryItem.className = 'gallery-item';
         galleryItem.innerHTML = `<img src="${photo.src}" alt="${photo.name}" loading="lazy">`;
         
+        // Add both click and touch handling for gallery items
         galleryItem.addEventListener('click', () => {
             openFullscreenViewer(index);
         });
+        
+        // Touch handling for mobile
+        if (isMobile()) {
+            let touchStartTime = 0;
+            galleryItem.addEventListener('touchstart', function(e) {
+                touchStartTime = Date.now();
+                this.style.transform = 'scale(0.95)';
+                this.style.transition = 'transform 0.1s ease';
+            }, { passive: true });
+            
+            galleryItem.addEventListener('touchend', function(e) {
+                const touchDuration = Date.now() - touchStartTime;
+                
+                // Reset transform
+                setTimeout(() => {
+                    this.style.transform = '';
+                    this.style.transition = '';
+                }, 150);
+                
+                // Handle touch tap
+                if (touchDuration < 500 && touchDuration > 50) {
+                    openFullscreenViewer(index);
+                }
+            }, { passive: true });
+        }
         
         galleryGrid.appendChild(galleryItem);
     });
@@ -702,14 +728,40 @@ if (isMobile()) {
     
     // Enhanced touch feedback for interactive elements
     document.querySelectorAll('.bottle, .photo-card, .blow-button').forEach(element => {
-        element.addEventListener('touchstart', function() {
+        let touchStartTime = 0;
+        
+        element.addEventListener('touchstart', function(e) {
+            touchStartTime = Date.now();
             this.style.transform = 'scale(0.95)';
+            this.style.transition = 'transform 0.1s ease';
         }, { passive: true });
         
-        element.addEventListener('touchend', function() {
+        element.addEventListener('touchend', function(e) {
+            const touchDuration = Date.now() - touchStartTime;
+            
+            // Reset transform
             setTimeout(() => {
                 this.style.transform = '';
+                this.style.transition = '';
             }, 150);
+            
+            // Handle the action if it was a quick tap
+            if (touchDuration < 500 && touchDuration > 50) {
+                // Trigger the appropriate action
+                if (this.classList.contains('bottle')) {
+                    const message = this.getAttribute('data-message');
+                    if (message) {
+                        showMessage(message);
+                    }
+                } else if (this.classList.contains('photo-card')) {
+                    const folder = this.getAttribute('data-folder');
+                    if (folder) {
+                        openPhotoGallery(folder);
+                    }
+                } else if (this.classList.contains('blow-button')) {
+                    blowCandles();
+                }
+            }
         }, { passive: true });
     });
     
@@ -745,10 +797,16 @@ if (isMobile()) {
         }, { passive: true });
     });
     
-    // Prevent zoom on double-tap for specific elements
+    // Prevent zoom on double-tap but allow clicks
     document.querySelectorAll('.bottle, .photo-card, .blow-button, .countdown-item').forEach(element => {
+        let lastTouchTime = 0;
         element.addEventListener('touchend', (e) => {
-            e.preventDefault();
+            const now = Date.now();
+            if (now - lastTouchTime < 300) {
+                // Double tap detected - prevent zoom
+                e.preventDefault();
+            }
+            lastTouchTime = now;
         });
     });
     
