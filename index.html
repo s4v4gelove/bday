@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, My Love 💕</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="heart-loader">
+            <div class="heart"></div>
+            <div class="heart"></div>
+        </div>
+        <p>Loading our love story...</p>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" style="display: none;">
+        <!-- Hero Section -->
+        <section id="hero" class="section">
+            <div class="stars"></div>
+            <div class="hero-content">
+                <h1 class="typewriter">Happy Birthday, Beautiful!</h1>
+                <p class="subtitle">Even though we're miles apart, you're always in my heart</p>
+                <div class="heart-animation">
+                    <div class="floating-heart"></div>
+                    <div class="floating-heart"></div>
+                    <div class="floating-heart"></div>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <div class="scroll-arrow"></div>
+            </div>
+        </section>
+
+        <!-- Distance Connection Section -->
+        <section id="connection" class="section">
+            <div class="container">
+                <h2>Connected Across Miles</h2>
+                <div class="world-map">
+                    <div class="location" id="mumbai">
+                        <div class="pin">🌆</div>
+                        <span>Mumbai, India</span>
+                        <small>You ❤️</small>
+                    </div>
+                    <div class="connection-line">
+                        <div class="pulse"></div>
+                        <div class="distance-label">8,000+ miles of love</div>
+                    </div>
+                    <div class="location" id="phoenix">
+                        <div class="pin">🏜️</div>
+                        <span>Phoenix, USA</span>
+                        <small>Me 💕</small>
+                    </div>
+                </div>
+                <p class="distance-text">Distance means nothing when someone means everything</p>
+                
+                <!-- Time Zones -->
+                <div class="time-zones">
+                    <div class="time-zone">
+                        <h3>🇮🇳 Mumbai Time</h3>
+                        <div id="mumbai-time" class="time-display"></div>
+                        <small class="timezone-label"></small>
+                    </div>
+                    <div class="time-zone">
+                        <h3>🇺🇸 Phoenix Time</h3>
+                        <div id="phoenix-time" class="time-display"></div>
+                        <small class="timezone-label"></small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Memory Timeline -->
+        <section id="memories" class="section">
+            <div class="container">
+                <h2>Our Journey Together</h2>
+                <div class="timeline">
+                    <div class="timeline-item" data-year="Tinder Match">
+                        <div class="timeline-content">
+                            <h3>We Found Each Other</h3>
+                            <p>A simple swipe right changed our lives forever...</p>
+                            <div class="memory-photo">💕</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-year="First Meeting">
+                        <div class="timeline-content">
+                            <h3>Finally Meeting in Mumbai</h3>
+                            <p>After more than a year of calls and texts, we finally met! You even made me call my mom - that was insane but so sweet 😄</p>
+                            <div class="memory-photo">🏙️</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-year="First Kiss">
+                        <div class="timeline-content">
+                            <h3>Movie Night Magic</h3>
+                            <p>Our first kiss during one of our movie dates - a moment I'll never forget...</p>
+                            <div class="memory-photo">🎬</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-year="New Year 2024">
+                        <div class="timeline-content">
+                            <h3>Best New Year Ever</h3>
+                            <p>December 31st, 2023 - We celebrated together and had the absolute best time of our lives. That night we stayed together was pure magic ✨</p>
+                            <div class="memory-photo">🎆</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-year="Bangalore Visits">
+                        <div class="timeline-content">
+                            <h3>Love Across Cities</h3>
+                            <p>All those trips from Bangalore to Mumbai just to see you - every journey was worth it for your smile...</p>
+                            <div class="memory-photo">✈️</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-year="August 2024">
+                        <div class="timeline-content">
+                            <h3>Temporary Goodbye</h3>
+                            <p>The hardest part - when I had to leave for the USA. Distance can't diminish what we have...</p>
+                            <div class="memory-photo">🌍</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-year="Today">
+                        <div class="timeline-content">
+                            <h3>Your Special Day - Sept 5, 2025</h3>
+                            <p>Happy Birthday, my love! From across the world, I'm celebrating you and all the joy you bring to my life. This webpage is my love letter to you 💕</p>
+                            <div class="memory-photo">🎂</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Messages Section -->
+        <section id="messages" class="section">
+            <div class="container">
+                <h2>Messages From My Heart</h2>
+                <div class="message-bottles">
+                    <div class="bottle" data-message="You light up my world even from thousands of miles away. Your smile is my sunshine, your laugh is my favorite melody.">
+                        <div class="bottle-container">
+                            <div class="bottle-neck"></div>
+                            <div class="bottle-body"></div>
+                            <div class="message-paper"></div>
+                        </div>
+                        <span class="bottle-label">Click me!</span>
+                    </div>
+                    <div class="bottle" data-message="Every day with you is a new adventure, even when we're apart. You make the ordinary extraordinary.">
+                        <div class="bottle-container">
+                            <div class="bottle-neck"></div>
+                            <div class="bottle-body"></div>
+                            <div class="message-paper"></div>
+                        </div>
+                        <span class="bottle-label">Click me!</span>
+                    </div>
+                    <div class="bottle" data-message="Distance is just a test to see how far love can travel. Ours travels infinitely. Happy Birthday, my love!">
+                        <div class="bottle-container">
+                            <div class="bottle-neck"></div>
+                            <div class="bottle-body"></div>
+                            <div class="message-paper"></div>
+                        </div>
+                        <span class="bottle-label">Click me!</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Photo Gallery -->
+        <section id="gallery" class="section">
+            <div class="container">
+                <h2>Our Beautiful Memories</h2>
+                <div class="photo-grid">
+                    <div class="photo-card" data-folder="our time together">
+                        <div class="photo-placeholder">💕</div>
+                        <p>Our Time Together</p>
+                        <span class="photo-count">Loading...</span>
+                    </div>
+                    <div class="photo-card" data-folder="our video calls">
+                        <div class="photo-placeholder">📱</div>
+                        <p>Our Video Calls</p>
+                        <span class="photo-count">Loading...</span>
+                    </div>
+                    <div class="photo-card" data-folder="baby purva">
+                        <div class="photo-placeholder">👶</div>
+                        <p>Baby Purva</p>
+                        <span class="photo-count">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Birthday Wishes -->
+        <section id="birthday" class="section">
+            <div class="container">
+                <div class="birthday-card">
+                    <h2>Happy Birthday, My Everything!</h2>
+                    <div class="cake">
+                        <div class="cake-base"></div>
+                        <div class="candles">
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                            <div class="candle"><div class="flame"></div></div>
+                        </div>
+                    </div>
+                    <p class="birthday-message">
+                        Today is all about celebrating the incredible person you are. 
+                        Your kindness, your beauty, your amazing spirit - everything about you makes my world brighter. 
+                        I may not be there to give you a birthday hug, but I'm sending you all my love across the miles.
+                        Here's to another year of your wonderful life and to our beautiful future together! 🎉
+                    </p>
+                    <button id="blowCandles" class="blow-button">Make a wish and blow the candles! 🕯️</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Countdown Section -->
+        <section id="countdown" class="section">
+            <div class="container">
+                <h2>Until We're Together Again</h2>
+                <div id="countdown-timer" class="countdown-display">
+                    <div class="countdown-item">
+                        <span id="days">00</span>
+                        <label>Days</label>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="hours">00</span>
+                        <label>Hours</label>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="minutes">00</span>
+                        <label>Minutes</label>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="seconds">00</span>
+                        <label>Seconds</label>
+                    </div>
+                </div>
+                <p class="countdown-text">Every second brings us closer to being in each other's arms again 💕</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Message Modal -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="letter">
+                <div class="letter-header">
+                    <h3>A Message From My Heart</h3>
+                </div>
+                <div class="letter-body">
+                    <p id="modalMessage"></p>
+                </div>
+                <div class="letter-signature">
+                    <p>With all my love,<br>Your Boyfriend 💕</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Gallery Modal -->
+    <div id="photoGalleryModal" class="gallery-modal">
+        <div class="gallery-header">
+            <h3 id="galleryTitle">Our Memories</h3>
+            <button class="gallery-close">&times;</button>
+        </div>
+        
+        <!-- Gallery Grid View -->
+        <div id="galleryGrid" class="gallery-grid">
+            <div class="gallery-loading">
+                <div class="loading-spinner"></div>
+                <p>Loading your beautiful memories...</p>
+            </div>
+        </div>
+        
+        <!-- Full Screen Viewer -->
+        <div id="fullscreenViewer" class="fullscreen-viewer" style="display: none;">
+            <div class="viewer-controls">
+                <button class="viewer-back">← Back to Grid</button>
+                <div class="viewer-info">
+                    <span id="photoCounter">1 of 10</span>
+                </div>
+                <button class="viewer-close">&times;</button>
+            </div>
+            
+            <div class="viewer-content">
+                <button class="nav-btn prev-btn">‹</button>
+                <div class="photo-container">
+                    <img id="fullscreenImage" src="" alt="Memory">
+                    <div class="photo-loader">Loading...</div>
+                </div>
+                <button class="nav-btn next-btn">›</button>
+            </div>
+            
+            <div class="viewer-thumbnails">
+                <div class="thumbnail-strip" id="thumbnailStrip">
+                    <!-- Thumbnails will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
