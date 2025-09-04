@@ -234,42 +234,90 @@ async function loadPhotoCounts() {
     }
 }
 
-// Load photos from a folder
+// Optimized photo loading with predefined image lists for better GitHub Pages performance
+const photoManifests = {
+    'our time together': [
+        '1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg',
+        '11.jpg', '12.jpg', '13.jpg'
+    ],
+    'our video calls': [
+        '1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg',
+        '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg'
+    ],
+    'baby purva': [
+        '1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg',
+        '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg'
+    ]
+};
+
+// Image cache for better performance
+const imageCache = new Map();
+
+// Fast image existence check with timeout
+function checkImageExists(src, timeout = 3000) {
+    return new Promise((resolve) => {
+        // Check cache first
+        if (imageCache.has(src)) {
+            resolve(imageCache.get(src));
+            return;
+        }
+
+        const img = new Image();
+        let timeoutId;
+
+        const cleanup = (exists) => {
+            clearTimeout(timeoutId);
+            imageCache.set(src, exists);
+            resolve(exists);
+        };
+
+        img.onload = () => cleanup(true);
+        img.onerror = () => cleanup(false);
+        
+        // Set timeout to avoid hanging
+        timeoutId = setTimeout(() => cleanup(false), timeout);
+        
+        img.src = src;
+    });
+}
+
+// Optimized photo loading with parallel requests and caching
 async function loadPhotosFromFolder(folder) {
-    const supportedFormats = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    const manifest = photoManifests[folder] || [];
     const photos = [];
     
-    // Since we can't scan directories in a browser, we'll try common filenames
-    // Users will need to follow a naming convention
-    const commonNames = [
-        'image1', 'image2', 'image3', 'image4', 'image5', 'image6', 'image7', 'image8', 'image9', 'image10',
-        'image11', 'image12', 'image13', 'image14', 'image15', 'image16', 'image17', 'image18', 'image19', 'image20',
-        'photo1', 'photo2', 'photo3', 'photo4', 'photo5', 'photo6', 'photo7', 'photo8', 'photo9', 'photo10',
-        'photo11', 'photo12', 'photo13', 'photo14', 'photo15', 'photo16', 'photo17', 'photo18', 'photo19', 'photo20',
-        '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'
-    ];
+    if (manifest.length === 0) {
+        console.log(`No manifest found for folder: ${folder}`);
+        return photos;
+    }
+
+    // Check all images in parallel with limited concurrency
+    const concurrencyLimit = 6; // Limit concurrent requests for GitHub Pages
+    const batches = [];
     
-    for (const name of commonNames) {
-        for (const format of supportedFormats) {
-            try {
-                const imagePath = `photos/${folder}/${name}.${format}`;
-                // Try to load the image to see if it exists
-                await new Promise((resolve, reject) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        photos.push({
-                            src: imagePath,
-                            name: `${name}.${format}`
-                        });
-                        resolve();
-                    };
-                    img.onerror = reject;
-                    img.src = imagePath;
-                });
-            } catch (error) {
-                // Image doesn't exist, continue
+    for (let i = 0; i < manifest.length; i += concurrencyLimit) {
+        batches.push(manifest.slice(i, i + concurrencyLimit));
+    }
+
+    for (const batch of batches) {
+        const promises = batch.map(async (filename) => {
+            const imagePath = `photos/${folder}/${filename}`;
+            const exists = await checkImageExists(imagePath, 2000); // 2 second timeout
+            
+            if (exists) {
+                return {
+                    src: imagePath,
+                    name: filename
+                };
             }
-        }
+            return null;
+        });
+
+        const results = await Promise.all(promises);
+        photos.push(...results.filter(photo => photo !== null));
+        
+        // Small delay between batches to be gentle on GitHub Pages
+        await new Promise(resolve => setTimeout(resolve, 100));
     }
     
     return photos;
@@ -325,14 +373,57 @@ async function openPhotoGallery(folder) {
     }
 }
 
-// Display photos in grid layout
+// Display photos in grid layout with optimized loading
 function displayPhotoGrid() {
     galleryGrid.innerHTML = '';
     
     currentGallery.forEach((photo, index) => {
         const galleryItem = document.createElement('div');
         galleryItem.className = 'gallery-item';
-        galleryItem.innerHTML = `<img src="${photo.src}" alt="${photo.name}" loading="lazy">`;
+        
+        // Create image with loading placeholder
+        const img = document.createElement('img');
+        img.alt = photo.name;
+        img.loading = 'lazy';
+        img.style.opacity = '0';
+        img.style.transition = 'opacity 0.3s ease';
+        
+        // Add loading placeholder
+        galleryItem.innerHTML = `
+            <div class="image-placeholder" style="
+                width: 100%; 
+                height: 100%; 
+                background: rgba(255,255,255,0.1); 
+                display: flex; 
+                align-items: center; 
+                justify-content: center;
+                font-size: 2rem;
+                position: absolute;
+                top: 0;
+                left: 0;
+            ">📷</div>
+        `;
+        
+        // Handle image loading
+        img.onload = function() {
+            const placeholder = galleryItem.querySelector('.image-placeholder');
+            if (placeholder) {
+                placeholder.remove();
+            }
+            this.style.opacity = '1';
+        };
+        
+        img.onerror = function() {
+            const placeholder = galleryItem.querySelector('.image-placeholder');
+            if (placeholder) {
+                placeholder.innerHTML = '❌';
+                placeholder.style.fontSize = '1.5rem';
+            }
+        };
+        
+        // Set source after setting up handlers
+        img.src = photo.src;
+        galleryItem.appendChild(img);
         
         // Add both click and touch handling for gallery items
         galleryItem.addEventListener('click', () => {
@@ -366,6 +457,20 @@ function displayPhotoGrid() {
         
         galleryGrid.appendChild(galleryItem);
     });
+    
+    // Preload first few images for better UX
+    preloadImages(currentGallery.slice(0, 6));
+}
+
+// Preload images for faster viewing
+function preloadImages(photos) {
+    photos.forEach(photo => {
+        if (!imageCache.has(photo.src)) {
+            const img = new Image();
+            img.src = photo.src;
+            imageCache.set(photo.src, true);
+        }
+    });
 }
 
 // Open fullscreen viewer
@@ -385,7 +490,7 @@ function openFullscreenViewer(index) {
     updateThumbnails();
 }
 
-// Update fullscreen photo
+// Update fullscreen photo with optimized loading
 function updateFullscreenPhoto() {
     if (currentGallery.length === 0) return;
     
@@ -394,29 +499,79 @@ function updateFullscreenPhoto() {
     
     // Show loader and hide image initially
     photoLoader.style.display = 'block';
+    photoLoader.textContent = 'Loading...';
     fullscreenImage.style.opacity = '0';
     
     // Update photo counter
     photoCounter.textContent = `${currentPhotoIndex + 1} of ${currentGallery.length}`;
     
-    // Load the image
-    fullscreenImage.onload = function() {
-        // Hide loader and show image when loaded
-        photoLoader.style.display = 'none';
-        fullscreenImage.style.opacity = '1';
-    };
-    
-    fullscreenImage.onerror = function() {
-        // Handle error case
-        photoLoader.textContent = 'Failed to load image';
-    };
-    
-    // Set the image source (this triggers loading)
-    fullscreenImage.src = photo.src;
+    // Check if image is already cached
+    if (imageCache.has(photo.src)) {
+        // Image should load quickly from cache
+        fullscreenImage.onload = function() {
+            photoLoader.style.display = 'none';
+            fullscreenImage.style.opacity = '1';
+        };
+        
+        fullscreenImage.onerror = function() {
+            photoLoader.textContent = 'Failed to load image';
+            photoLoader.style.display = 'block';
+        };
+        
+        fullscreenImage.src = photo.src;
+    } else {
+        // Load image with timeout for better UX
+        const loadTimeout = setTimeout(() => {
+            photoLoader.textContent = 'Taking longer than expected...';
+        }, 5000);
+        
+        fullscreenImage.onload = function() {
+            clearTimeout(loadTimeout);
+            photoLoader.style.display = 'none';
+            fullscreenImage.style.opacity = '1';
+            imageCache.set(photo.src, true);
+        };
+        
+        fullscreenImage.onerror = function() {
+            clearTimeout(loadTimeout);
+            photoLoader.textContent = 'Failed to load image';
+            photoLoader.style.display = 'block';
+        };
+        
+        // Set the image source (this triggers loading)
+        fullscreenImage.src = photo.src;
+    }
     
     // Update thumbnail selection
     document.querySelectorAll('.thumbnail-item').forEach((thumb, index) => {
         thumb.classList.toggle('active', index === currentPhotoIndex);
+    });
+    
+    // Preload adjacent images for smoother navigation
+    preloadAdjacentImages();
+}
+
+// Preload adjacent images for smoother navigation
+function preloadAdjacentImages() {
+    const preloadIndices = [];
+    
+    // Preload next image
+    if (currentPhotoIndex + 1 < currentGallery.length) {
+        preloadIndices.push(currentPhotoIndex + 1);
+    }
+    
+    // Preload previous image
+    if (currentPhotoIndex - 1 >= 0) {
+        preloadIndices.push(currentPhotoIndex - 1);
+    }
+    
+    preloadIndices.forEach(index => {
+        const photo = currentGallery[index];
+        if (!imageCache.has(photo.src)) {
+            const img = new Image();
+            img.src = photo.src;
+            imageCache.set(photo.src, true);
+        }
     });
 }
 
