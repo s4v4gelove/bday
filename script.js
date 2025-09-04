@@ -655,3 +655,127 @@ document.querySelectorAll('#hero, #birthday').forEach(section => {
         isHeartTrailActive = false;
     });
 });
+
+// Mobile-specific enhancements
+function isMobile() {
+    return window.innerWidth <= 768 || 'ontouchstart' in window;
+}
+
+// Touch-friendly photo gallery navigation
+if (isMobile()) {
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    // Add swipe gesture support to photo viewer
+    const photoViewer = document.getElementById('fullscreenViewer');
+    if (photoViewer) {
+        photoViewer.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        photoViewer.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+        
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const swipeDistance = touchEndX - touchStartX;
+            
+            if (Math.abs(swipeDistance) > swipeThreshold) {
+                if (swipeDistance > 0) {
+                    // Swipe right - previous photo
+                    const prevBtn = document.querySelector('.prev-btn');
+                    if (prevBtn && prevBtn.style.display !== 'none') {
+                        prevBtn.click();
+                    }
+                } else {
+                    // Swipe left - next photo
+                    const nextBtn = document.querySelector('.next-btn');
+                    if (nextBtn && nextBtn.style.display !== 'none') {
+                        nextBtn.click();
+                    }
+                }
+            }
+        }
+    }
+    
+    // Enhanced touch feedback for interactive elements
+    document.querySelectorAll('.bottle, .photo-card, .blow-button').forEach(element => {
+        element.addEventListener('touchstart', function() {
+            this.style.transform = 'scale(0.95)';
+        }, { passive: true });
+        
+        element.addEventListener('touchend', function() {
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+        }, { passive: true });
+    });
+    
+    // Touch-based heart trail for mobile
+    document.addEventListener('touchmove', (e) => {
+        if (isHeartTrailActive && Math.random() < 0.05) {
+            const touch = e.touches[0];
+            const heart = document.createElement('div');
+            heart.innerHTML = '💕';
+            heart.style.position = 'fixed';
+            heart.style.left = touch.clientX + 'px';
+            heart.style.top = touch.clientY + 'px';
+            heart.style.fontSize = '1rem';
+            heart.style.pointerEvents = 'none';
+            heart.style.zIndex = '999';
+            heart.style.animation = 'heartTrail 1s ease-out forwards';
+            
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 1000);
+        }
+    }, { passive: true });
+    
+    // Activate heart trail on touch for special sections
+    document.querySelectorAll('#hero, #birthday').forEach(section => {
+        section.addEventListener('touchstart', () => {
+            isHeartTrailActive = true;
+            setTimeout(() => {
+                isHeartTrailActive = false;
+            }, 3000); // Auto-disable after 3 seconds
+        }, { passive: true });
+    });
+    
+    // Prevent zoom on double-tap for specific elements
+    document.querySelectorAll('.bottle, .photo-card, .blow-button, .countdown-item').forEach(element => {
+        element.addEventListener('touchend', (e) => {
+            e.preventDefault();
+        });
+    });
+    
+    // Optimize performance on mobile by reducing animation frequency
+    const originalUpdateTimes = updateTimes;
+    updateTimes = function() {
+        // Update time less frequently on mobile to save battery
+        if (document.hidden) return; // Don't update when tab is not visible
+        originalUpdateTimes();
+    };
+    
+    // Add visibility change listener for better mobile performance
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            // Pause expensive animations when tab is hidden
+            document.querySelectorAll('.stars, body::before').forEach(element => {
+                if (element.style) {
+                    element.style.animationPlayState = 'paused';
+                }
+            });
+        } else {
+            // Resume animations when tab is visible
+            document.querySelectorAll('.stars, body::before').forEach(element => {
+                if (element.style) {
+                    element.style.animationPlayState = 'running';
+                }
+            });
+        }
+    });
+}
